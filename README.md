@@ -141,5 +141,4 @@ GET /api/v1/orders?page=1&limit=10&status=pending&sort=created_at_desc
 ```
 
 ## **Final Notes**
-This API is designed for **real-world applications**, following best practices for scalability, security, and performance. With these techniques, you can confidently build and deploy this API for clients or as part of a freelance portfolio. 🚀
-
+This API is designed for **real-world applications**, following best practices for scalability, security, and performance.
