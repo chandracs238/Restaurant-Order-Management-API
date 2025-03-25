@@ -19,6 +19,18 @@ The **Restaurant API** is a scalable, secure, and well-structured system for man
 
 ## **Endpoints**
 
+| `/api/v1/menu/{itemId}` | Manager | `DELETE` | Deletes a menu item |
+
+### **5. Webhooks & Notifications**
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/api/v1/webhooks/orders` | `POST` | Sends real-time order status updates |
+| `/api/v1/notifications` | `GET` | Fetches user notifications |
+
+## **Advanced Features & Best Practices**
+### ✅ **Rate Limiting & Security**
+- Uses API gateway or middleware to prevent abuse.
+- Limits requests per user to prevent spamming.
 ### **1. Authentication & User Management**
 | Endpoint | Method | Purpose |
 |----------|--------|---------|
@@ -56,18 +68,6 @@ The **Restaurant API** is a scalable, secure, and well-structured system for man
 | `/api/v1/menu/{itemId}` | Customer | `GET` | Retrieves a specific menu item |
 | `/api/v1/menu` | Manager | `POST` | Adds a new menu item |
 | `/api/v1/menu/{itemId}` | Manager | `PUT` | Updates an existing menu item |
-| `/api/v1/menu/{itemId}` | Manager | `DELETE` | Deletes a menu item |
-
-### **5. Webhooks & Notifications**
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/api/v1/webhooks/orders` | `POST` | Sends real-time order status updates |
-| `/api/v1/notifications` | `GET` | Fetches user notifications |
-
-## **Advanced Features & Best Practices**
-### ✅ **Rate Limiting & Security**
-- Uses API gateway or middleware to prevent abuse.
-- Limits requests per user to prevent spamming.
 
 ### ✅ **Pagination, Filtering & Sorting**
 - Orders & menu items support **limit, offset, sorting, filtering**.

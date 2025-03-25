@@ -1,7 +1,9 @@
-package com.pcs.restaurantapi.service;
+package com.pcs.restaurantapi.service.impl;
 
+import com.pcs.restaurantapi.dto.ProfileDto;
 import com.pcs.restaurantapi.dto.UserDto;
 import com.pcs.restaurantapi.exception.UserAlreadyExistsException;
+import com.pcs.restaurantapi.exception.UserNotFoundException;
 import com.pcs.restaurantapi.model.Role;
 import com.pcs.restaurantapi.model.RoleName;
 import com.pcs.restaurantapi.model.User;
@@ -40,5 +42,22 @@ public class UserServiceImpl {
         User savedUser = userRepository.save(user);
 
         return "User created successfully";
+    }
+
+    public ProfileDto getProfile(String username){
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found "));
+        return new ProfileDto(user);
+    }
+
+    public ProfileDto updateProfile(String username, ProfileDto profileDto) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found "));
+        user.setName(profileDto.getName());
+        user.setDob(profileDto.getDob());
+        user.setUsername(profileDto.getUsername());
+        user.setEmail(profileDto.getEmail());
+        userRepository.save(user);
+        return new ProfileDto(user);
     }
 }

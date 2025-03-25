@@ -3,7 +3,7 @@ package com.pcs.restaurantapi.controller;
 import com.pcs.restaurantapi.dto.AuthResponse;
 import com.pcs.restaurantapi.dto.UserDto;
 import com.pcs.restaurantapi.security.JwtUtil;
-import com.pcs.restaurantapi.service.UserServiceImpl;
+import com.pcs.restaurantapi.service.impl.UserServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
     private final JwtUtil jwtUtil;
@@ -25,11 +25,6 @@ public class AuthController {
         this.userDetailsService = userDetailsService;
         this.userService = userService;
         this.authenticationManager = authenticationManager;
-    }
-
-    @GetMapping("/welcome")
-    public ResponseEntity<String> welcome(){
-        return ResponseEntity.ok("Welcome");
     }
 
     @PostMapping("/login")
