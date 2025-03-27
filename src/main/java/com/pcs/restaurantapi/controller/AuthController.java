@@ -7,6 +7,7 @@ import com.pcs.restaurantapi.service.impl.UserServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
@@ -34,12 +35,12 @@ public class AuthController {
         );
         UserDetails userDetails = userDetailsService.loadUserByUsername(userDto.getUsername());
         String token = jwtUtil.generateToken(userDetails.getUsername());
+        SecurityContextHolder.getContext().getAuthentication().getAuthorities().forEach(System.out::println);
         return ResponseEntity.ok(new AuthResponse(token));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody UserDto userDto){
-        String message = userService.registerUser(userDto);
-        return ResponseEntity.ok(message);
+    public ResponseEntity<UserDto> register(@RequestBody UserDto userDto){
+        return ResponseEntity.ok(userService.createUser(userDto));
     }
 }

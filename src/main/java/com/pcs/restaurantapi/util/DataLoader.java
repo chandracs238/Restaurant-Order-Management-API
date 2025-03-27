@@ -1,13 +1,14 @@
 package com.pcs.restaurantapi.util;
 
 import com.pcs.restaurantapi.model.Role;
-import com.pcs.restaurantapi.model.RoleName;
 import com.pcs.restaurantapi.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-@Component
+import java.util.List;
+
+
 public class DataLoader implements CommandLineRunner {
 
     @Autowired
@@ -15,9 +16,14 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        for (RoleName roleName : RoleName.values()) {
+        List<String> roles = List.of("MANAGER", "CUSTOMER", "DELIVERY_CREW");
+
+        for (String roleName : roles) {
             roleRepository.findByName(roleName)
-                    .orElseGet(() -> roleRepository.save(new Role(roleName)));
+                    .orElseGet(() -> {
+                        System.out.println("Preloading role: " + roleName);
+                        return roleRepository.save(new Role(roleName));
+                    });
         }
     }
 }

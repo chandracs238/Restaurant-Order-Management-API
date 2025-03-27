@@ -16,11 +16,4 @@ public class ProfileDto {
     private String email;
     private String name;
     private LocalDate dob;
-
-    public ProfileDto(User user){
-        this.email = user.getEmail();
-        this.dob = user.getDob();
-        this.name = user.getName();
-        this.username = user.getUsername();
-    }
 }
