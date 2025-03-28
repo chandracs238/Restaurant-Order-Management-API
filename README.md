@@ -19,14 +19,6 @@ The **Restaurant API** is a scalable, secure, and well-structured system for man
 
 ## **Endpoints**
 
-| `/api/v1/menu/{itemId}` | Manager | `DELETE` | Deletes a menu item |
-
-### **5. Webhooks & Notifications**
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/api/v1/webhooks/orders` | `POST` | Sends real-time order status updates |
-| `/api/v1/notifications` | `GET` | Fetches user notifications |
-
 ## **Advanced Features & Best Practices**
 ### ✅ **Rate Limiting & Security**
 - Uses API gateway or middleware to prevent abuse.
@@ -44,7 +36,7 @@ The **Restaurant API** is a scalable, secure, and well-structured system for man
 ### **2. Order Endpoints**
 | Endpoint | Role | Method | Purpose |
 |----------|------|--------|---------|
-| `/api/v1/orders` | Customer | `GET` | Fetch paginated orders with filtering & sorting |
+| `/api/v1/orders` | Customer | `GET @PreAuthorize("hasRole('MANAGER')")` | Fetch paginated orders with filtering & sorting |
 | `/api/v1/orders` | Customer | `POST` | Places an order from the cart (Idempotent) |
 | `/api/v1/orders/{orderId}` | Customer | `GET` | Fetches order details (403 if unauthorized) |
 | `/api/v1/orders` | Manager | `GET` | Retrieves all orders (Paginated) |
@@ -68,6 +60,14 @@ The **Restaurant API** is a scalable, secure, and well-structured system for man
 | `/api/v1/menu/{itemId}` | Customer | `GET` | Retrieves a specific menu item |
 | `/api/v1/menu` | Manager | `POST` | Adds a new menu item |
 | `/api/v1/menu/{itemId}` | Manager | `PUT` | Updates an existing menu item |
+| `/api/v1/menu/{itemId}` | Manager | `DELETE` | Deletes a menu item |
+
+### **5. Webhooks & Notifications**
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/api/v1/webhooks/orders` | `POST` | Sends real-time order status updates |
+| `/api/v1/notifications` | `GET` | Fetches user notifications |
+
 
 ### ✅ **Pagination, Filtering & Sorting**
 - Orders & menu items support **limit, offset, sorting, filtering**.

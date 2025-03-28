@@ -3,6 +3,7 @@ package com.pcs.restaurantapi.config;
 import com.pcs.restaurantapi.security.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -53,10 +54,16 @@ public class SecurityConfig {
                                 "/swagger-resources/**",
                                 "/webjars/**"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/menu/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/menu").hasAuthority("ROLE_MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/menu/**").hasAuthority("ROLE_MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/menu/**").hasAuthority("ROLE_MANAGER")
                         .requestMatchers("/api/v1/admin/**").hasAuthority("ROLE_MANAGER")
                         .requestMatchers("/api/v1/delivery/**").hasAuthority("ROLE_DELIVERY_CREW")
                         .requestMatchers("/api/v1/customer/**").hasAuthority("ROLE_CUSTOMER")
-                        .requestMatchers("/api/v1/profile/**").hasAnyAuthority("ROLE_MANAGER", "ROLE_DELIVERY_CREW", "ROLE_CUSTOMER") // ✅ Allow all roles
+                        .requestMatchers("/api/v1/profile/**").hasAnyAuthority(
+                                "ROLE_MANAGER", "ROLE_DELIVERY_CREW", "ROLE_CUSTOMER"
+                        )
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

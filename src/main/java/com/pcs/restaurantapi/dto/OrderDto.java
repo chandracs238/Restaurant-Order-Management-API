@@ -1,22 +1,22 @@
 package com.pcs.restaurantapi.dto;
 
-import com.pcs.restaurantapi.model.OrderItem;
 import com.pcs.restaurantapi.model.OrderStatus;
-import com.pcs.restaurantapi.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDto {
-    private User customer;
-    private List<OrderItem> orderItems;
+    private Long id;
+    private Long customerId;
     private OrderStatus status; // PENDING, CONFIRMED, OUT_FOR_DELIVERY, DELIVERED, CANCELED
-    private User deliveryCrew;
+    private Long deliveryCrewId;
     private BigDecimal totalAmount;
+    private String idempotencyKey;
+    private LocalDateTime deliveredAt;
 }

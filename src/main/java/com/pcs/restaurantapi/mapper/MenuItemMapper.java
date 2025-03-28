@@ -2,7 +2,6 @@ package com.pcs.restaurantapi.mapper;
 
 import com.pcs.restaurantapi.dto.MenuItemDto;
 import com.pcs.restaurantapi.model.MenuItem;
-import com.pcs.restaurantapi.model.User;
 import org.springframework.stereotype.Component;
 
 @Component

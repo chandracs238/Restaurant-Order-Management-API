@@ -9,6 +9,7 @@ import com.pcs.restaurantapi.service.MenuItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,7 +21,6 @@ public class MenuItemServiceImpl implements MenuItemService {
     private final MenuItemRepository menuItemRepository;
     private final MenuItemMapper menuItemMapper;
 
-    @PreAuthorize("hasRole('MANAGER')")
     @Override
     public MenuItemDto createMenuItem(MenuItemDto menuItemDto) {
         validateMenuItemDto(menuItemDto);
@@ -47,6 +47,7 @@ public class MenuItemServiceImpl implements MenuItemService {
     }
 
     @Override
+    @Transactional
     public MenuItemDto updateMenuItem(Long menuItemId, MenuItemDto menuItemDto) {
         validateMenuItemDto(menuItemDto);
         MenuItem menuItem = menuItemRepository.findById(menuItemId)
