@@ -2,6 +2,7 @@ package com.pcs.restaurantapi.service.impl;
 
 import com.pcs.restaurantapi.dto.ProfileDto;
 import com.pcs.restaurantapi.dto.UserDto;
+import com.pcs.restaurantapi.exception.RoleNotFoundException;
 import com.pcs.restaurantapi.exception.UserAlreadyExistsException;
 import com.pcs.restaurantapi.exception.UserNotFoundException;
 import com.pcs.restaurantapi.mapper.UserMapper;
@@ -16,8 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -25,7 +26,8 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
+                           PasswordEncoder passwordEncoder, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -33,64 +35,77 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public UserDto createUser(UserDto userDto) {
         if (userRepository.existsByUsername(userDto.getUsername())) {
             throw new UserAlreadyExistsException("Username is already taken.");
         }
-        User user = new User();
-        user.setUsername(userDto.getUsername());
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
         Role defaultRole = roleRepository.findByName("CUSTOMER")
-                .orElseThrow(() -> new RuntimeException("Default role not found"));
+                .orElseThrow(() -> new RoleNotFoundException("Default role not found"));
+
+        User user = new User();
+        user.setUsername(user.getUsername());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setRole(defaultRole);
-        User savedUser = userRepository.save(user);
-        return userMapper.toUserDto(savedUser);
+
+        return userMapper.toUserDto(userRepository.save(user));
     }
 
     @Override
-    public UserDto getUserById(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-        return userMapper.toUserDto(user);
+    public UserDto getUserByUsername(String username) {
+        return userMapper.toUserDto(findUserByUsername(username));
     }
 
     @Override
     public List<UserDto> getAllUsers() {
-        return userRepository.findAll().stream().map(userMapper::toUserDto).toList();
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toUserDto)
+                .toList();
     }
 
     @Override
-    public UserDto updateUser(Long userId, UserDto userDto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+    public UserDto updateUser(String username, UserDto userDto) {
+        User user = findUserByUsername(username);
+
         user.setUsername(userDto.getUsername());
-        user.setPassword(userDto.getPassword());
-        userRepository.save(user);
-        return userMapper.toUserDto(user);
+
+        if (userDto.getPassword() != null && !userDto.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        }
+
+        return userMapper.toUserDto(userRepository.save(user));
     }
 
     @Override
-    public void deleteUser(Long userId) {
-        userRepository.deleteById(userId);
+    public void deleteUser(String username) {
+        if (!userRepository.existsByUsername(username)) {
+            throw new UserNotFoundException("User not found.");
+        }
+        userRepository.deleteByUsername(username);
     }
 
     @Override
-    public ProfileDto getProfile(String username){
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found "));
-        return userMapper.toProfileDto(user);
+    public ProfileDto getProfile(String username) {
+        return userMapper.toProfileDto(findUserByUsername(username));
     }
 
     @Override
     public ProfileDto updateProfile(String username, ProfileDto profileDto) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found "));
+        User user = findUserByUsername(username);
+
         user.setName(profileDto.getName());
         user.setDob(profileDto.getDob());
         user.setUsername(profileDto.getUsername());
         user.setEmail(profileDto.getEmail());
-        userRepository.save(user);
-        return userMapper.toProfileDto(user);
+
+        return userMapper.toProfileDto(userRepository.save(user));
+    }
+
+    // ----------------- Private Helper Methods -----------------
+
+    private User findUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User with username " + username + " not found"));
     }
 }

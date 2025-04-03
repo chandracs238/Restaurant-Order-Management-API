@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -27,8 +28,16 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String password;
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    private Cart cart;
     private LocalDate dob;
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
+
+    public <E> User(String testUser, String password, List<E> roleCustomer) {
+        this.username = testUser;
+        this.password = password;
+        this.role = (Role) roleCustomer.getFirst();
+    }
 }

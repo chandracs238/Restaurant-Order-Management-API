@@ -7,7 +7,6 @@ import com.pcs.restaurantapi.model.MenuItem;
 import com.pcs.restaurantapi.repository.MenuItemRepository;
 import com.pcs.restaurantapi.service.MenuItemService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,6 +76,9 @@ public class MenuItemServiceImpl implements MenuItemService {
     }
 
     private void validateMenuItemDto(MenuItemDto menuItemDto) {
+        if (menuItemDto == null){
+            throw new IllegalArgumentException("No input is received");
+        }
         if (menuItemDto.getName() == null || menuItemDto.getName().isEmpty()) {
             throw new IllegalArgumentException("Menu item name cannot be empty");
         }

@@ -5,9 +5,10 @@ import com.pcs.restaurantapi.service.impl.CartServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -18,25 +19,26 @@ public class CartController {
     private final CartServiceImpl cartService;
 
     @GetMapping
-    public ResponseEntity<List<CartItemDto>> getCartItems(@RequestParam Long userId, @RequestParam Long cartId) throws AccessDeniedException {
-        return ResponseEntity.ok(cartService.getAllCartItems(userId, cartId));
+    public ResponseEntity<List<CartItemDto>> getCartItems(@AuthenticationPrincipal UserDetails userDetails){
+        String username = userDetails.getUsername();
+        return ResponseEntity.ok(cartService.getAllCartItems(username));
     }
 
     @PostMapping
-    public ResponseEntity<?> createCart(@RequestParam Long userId, @RequestParam Long cartId, @RequestBody CartItemDto cartItemDto) throws AccessDeniedException {
+    public ResponseEntity<?> addCartItemToCart(String username, @RequestBody CartItemDto cartItemDto){
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(cartService.addCartItem(userId, cartId, cartItemDto));
+                .body(cartService.addCartItem(username, cartItemDto));
     }
 
     @DeleteMapping("/{cartItemId}")
-    public ResponseEntity<?> deleteCartItem(@PathVariable Long cartItemId, @RequestParam Long cartId, @RequestParam Long userId) throws AccessDeniedException {
-        cartService.removeCartItem(userId, cartId, cartItemId);
+    public ResponseEntity<?> deleteCartItem(@PathVariable Long cartItemId, String username) {
+        cartService.removeCartItem(username, cartItemId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Deleted CartItem");
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteCart(@RequestParam Long userId, @RequestParam Long cartId) throws AccessDeniedException {
-        cartService.removeCart(userId, cartId);
+    public ResponseEntity<?> deleteCart(String username){
+        cartService.removeCart(username);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Deleted Cart");
     }
 }

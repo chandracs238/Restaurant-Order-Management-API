@@ -4,6 +4,7 @@ import com.pcs.restaurantapi.dto.AuthResponse;
 import com.pcs.restaurantapi.dto.UserDto;
 import com.pcs.restaurantapi.security.JwtUtil;
 import com.pcs.restaurantapi.service.impl.UserServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody UserDto userDto){
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody UserDto userDto){
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword())
         );
@@ -40,7 +41,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDto> register(@RequestBody UserDto userDto){
+    public ResponseEntity<UserDto> register(@Valid @RequestBody UserDto userDto){
         return ResponseEntity.ok(userService.createUser(userDto));
     }
 }

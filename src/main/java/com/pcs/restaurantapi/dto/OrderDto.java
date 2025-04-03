@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 public class OrderDto {
     private Long id;
     private Long customerId;
+    private List<OrderItemDto> orderItems;
     private OrderStatus status; // PENDING, CONFIRMED, OUT_FOR_DELIVERY, DELIVERED, CANCELED
     private Long deliveryCrewId;
     private BigDecimal totalAmount;

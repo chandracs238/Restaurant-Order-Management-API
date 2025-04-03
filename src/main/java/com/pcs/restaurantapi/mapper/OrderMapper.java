@@ -2,22 +2,26 @@ package com.pcs.restaurantapi.mapper;
 
 import com.pcs.restaurantapi.dto.OrderDto;
 import com.pcs.restaurantapi.dto.OrderItemDto;
+import com.pcs.restaurantapi.dto.OrderRequest;
 import com.pcs.restaurantapi.model.MenuItem;
 import com.pcs.restaurantapi.model.Order;
 import com.pcs.restaurantapi.model.OrderItem;
 import com.pcs.restaurantapi.model.User;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+
 @Component
 public class OrderMapper {
 
-    public static OrderDto toOrderDto(Order order){
+    public OrderDto toOrderDto(Order order){
         if (order == null){
             return null;
         }
         return new OrderDto(
                 order.getId(),
                 order.getCustomer().getId(),
+                order.getOrderItems().stream().map(this::toOrderItemDto).collect(Collectors.toList()),
                 order.getStatus(),
                 order.getDeliveryCrew().getId(),
                 order.getTotalAmount(),
@@ -26,7 +30,7 @@ public class OrderMapper {
         );
     }
 
-    public static OrderItemDto toOrderItemDto(OrderItem orderItem){
+    public OrderItemDto toOrderItemDto(OrderItem orderItem){
         if (orderItem == null){
             return null;
         }
@@ -39,7 +43,7 @@ public class OrderMapper {
         );
     }
 
-    public static Order toOrderEntity(OrderDto orderDto, User customer, User deliveryCrew){
+    public Order toOrderEntity(OrderDto orderDto, User customer, User deliveryCrew){
         if (orderDto == null){
             return null;
         }
@@ -54,7 +58,7 @@ public class OrderMapper {
         return order;
     }
 
-    public static OrderItem toOrderItemDto(OrderItemDto orderItemDto, MenuItem menuItem, Order order){
+    public OrderItem toOrderItemDto(OrderItemDto orderItemDto, MenuItem menuItem, Order order){
         if (orderItemDto == null){
             return null;
         }

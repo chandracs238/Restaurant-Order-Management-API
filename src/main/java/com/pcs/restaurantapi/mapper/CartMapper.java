@@ -12,12 +12,12 @@ import java.util.List;
 @Component
 public class CartMapper {
 
-    public static CartDto toCartDto(Cart cart){
+    public CartDto toCartDto(Cart cart){
         if (cart == null){
             return null;
         }
         List<CartItemDto> cartItems = cart.getCartItems().stream()
-                .map(CartMapper::toCartItemDto)
+                .map(this::toCartItemDto)
                 .toList();
         return new CartDto(
                 cart.getId(),
@@ -26,7 +26,7 @@ public class CartMapper {
         );
     }
 
-    public static CartItemDto toCartItemDto(CartItem cartItem){
+    public CartItemDto toCartItemDto(CartItem cartItem){
         return new CartItemDto(
                 cartItem.getId(),
                 cartItem.getCart().getId(),
@@ -35,7 +35,7 @@ public class CartMapper {
         );
     }
 
-    public static Cart toCartEntity(CartDto cartDto, User customer){
+    public Cart toCartEntity(CartDto cartDto, User customer){
         Cart cart = new Cart();
         cart.setId(cartDto.getId());
         cart.setCustomer(customer);
